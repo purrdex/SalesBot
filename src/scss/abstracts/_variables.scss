@@ -1,0 +1,50 @@
+// -----------------------------------------------------------------------------
+// This file contains all application-wide Sass variables.
+// -----------------------------------------------------------------------------
+
+$mobile: 800px;
+
+:root {
+  --base-url: '/assets/';
+
+  --primary-font-stack: 'Montserrat', sans-serif;
+  --secondary-font-stack: 'Retro Computer', sans-serif;
+
+  --header-height: 8rem;
+  --billboard-height: 46rem;
+  --billboard-height-expanded: calc(var(--billboard-height) + 12rem);
+  --slideout-width: 46rem;
+
+  --inscription-size: 32rem;
+
+  --max-width: 140rem;
+
+  --white: 255, 255, 255;
+  --black: 19, 19, 19;
+  --dark-grey: 23, 23, 23;
+
+  --background: 255, 255, 255;
+  --text-color: 0, 0, 0;
+  --dark-text: 0, 0, 0;
+
+  --header-text: 0, 0, 0;
+
+  --pink: 255, 4, 180;
+  --highlight: 195, 255, 0;
+
+  --base-color: 195, 255, 0;
+  --button-color: 255, 4, 180;
+
+  --bid-color: 158, 3, 255;
+  --transferred-color: 2, 255, 100;
+  --claimed-color: 195, 255, 0;
+  --sale-color: 0, 255, 200;
+  --listed-color: 0, 255, 200;
+  --escrow-color: 255, 230, 0;
+  --magma: 255, 102, 73;
+
+  @media (max-width: $mobile) {
+    --header-height: 12rem;
+    --slideout-width: 100%;
+  }
+}
