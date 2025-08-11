@@ -1,0 +1,58 @@
+@use 'abstracts/variables' as *;
+@use 'abstracts/mixins' as *;
+
+main {
+  min-height: calc(100vh - 21rem);
+  padding-bottom: 8rem;
+
+  @media (max-width: $mobile) {
+    // padding-top: calc((var(--header-height) / 2) + 4rem);
+  }
+}
+
+.header-backdrop {
+  position: fixed;
+  z-index: 990;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--header-height);
+  background-color: rgba(var(--base-color), 1);
+  // mix-blend-mode: luminosity;
+  // backdrop-filter: blur(1rem);
+  pointer-events: none;
+}
+
+.status-wrapper {
+  position: fixed;
+  z-index: 993;
+  bottom: 0;
+  right: 0;
+
+  @include trans($duration: .2s);
+
+  @media (max-width: $mobile) {
+    bottom: -100%;
+
+    &.visible {
+      bottom: 0;
+    }
+  }
+}
+
+app-ordex-withdrawal {
+  position: fixed;
+  z-index: 99300;
+  top: 2rem;
+  right: 2rem;
+
+  width: calc(100% - 4rem);
+  max-width: 36rem;
+
+  @media (max-width: $mobile) {
+    top: 1rem;
+    right: 1rem;
+    width: calc(100% - 2rem);
+    max-width: 100%;
+  }
+}

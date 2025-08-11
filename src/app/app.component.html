@@ -1,0 +1,37 @@
+<div class="header-backdrop"></div>
+<app-header />
+
+<!-- <section
+  class="collections-menu"
+  waIntersectionObserver>
+
+  <app-collections />
+</section> -->
+
+@defer {
+  <app-menu />
+  <!-- <app-ordex-withdrawal /> -->
+}
+
+<main waIntersectionObserver>
+  <router-outlet />
+</main>
+
+<app-footer />
+<app-notifications />
+
+<div
+  class="status-wrapper"
+  [class.visible]="statusBarVisible()">
+
+  <app-status-bar [visible]="statusBarVisible()" />
+</div>
+
+@if ((chatActive$ | async); as active) {
+  <app-modal
+    [width]="500"
+    [height]="600">
+
+    <app-chat />
+  </app-modal>
+}
