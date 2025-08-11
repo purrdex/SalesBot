@@ -1,0 +1,41 @@
+@if (activeTraitFilters$ | async; as filters) {
+  @for (key of objectKeys(filterData); track key; let i = $index) {
+
+    @if (!(filterData[key][0] | isNumber)) {
+      <div
+        [id]="key"
+        class="filter-group-wrapper">
+
+        <ng-select
+          [(ngModel)]="activeTraitFilters[key]"
+          [placeholder]="key"
+          [searchable]="true"
+          [class.active]="filters[key]"
+          (change)="selectFilter($event)">
+
+          @for (item of filterData[key]; track item) {
+            @if (!(item | isNumber)) {
+              <ng-option [value]="item">
+                {{ item.toString() | titlecase }}
+              </ng-option>
+            }
+          }
+
+          <!-- <ng-option [value]="'none'">
+            None
+          </ng-option> -->
+        </ng-select>
+      </div>
+    }
+
+  }
+
+  @if (objectKeys(activeTraitFilters).length) {
+    <button
+      class="clear-filters"
+      (click)="clearFilters()">
+
+      Clear Filters
+    </button>
+  }
+}

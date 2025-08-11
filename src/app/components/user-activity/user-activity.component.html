@@ -1,0 +1,111 @@
+<section
+  class="events-wrapper">
+
+  <table>
+    <thead>
+      <tr>
+        <th>Event</th>
+        <th>Token ID</th>
+        <th>From</th>
+        <th>To</th>
+        <th>Value</th>
+        <th>&nbsp;</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      @for (event of (events$ | async);
+        track (event.hashId + '-' + event.type + '-' + event.from + '-' + event.tokenId)
+      ) {
+        <tr>
+          <td>
+            <div class="cell-inner">
+              {{ labels[event.type] }}
+            </div>
+          </td>
+          <td>
+            <div class="cell-inner">
+              #{{ event.tokenId }}
+            </div>
+          </td>
+          <td>
+            <div class="cell-inner">
+              <app-address [address]="event.from" />
+            </div>
+          </td>
+          <td>
+            <div class="cell-inner">
+              <app-address [address]="event.to" />
+            </div>
+          </td>
+          <td>
+            <div class="cell-inner">
+              Ξ{{ event.value | weiToEth }}
+            </div>
+          </td>
+          <td>
+            <div class="cell-inner">
+              {{ event.blockTimestamp | timeago : true }}
+            </div>
+          </td>
+        </tr>
+      }
+
+    </tbody>
+
+    <!-- <a
+        [routerLink]="['/', 'details', event.hashId]"
+        class="event-item"
+        [class]="event.type | lowercase">
+
+        <div class="image-wrapper">
+          <img
+            [lazyLoad]="dataSvc.staticUrl + '/images/' + event.sha + '.png'"
+            [defaultImage]="'assets/loadingphunk.png'"
+            width="160"
+            height="160"
+          />
+        </div>
+
+        <div class="labels-wrapper">
+
+          <div class="token-id">#{{ event.tokenId }}</div>
+
+          <div class="label">
+            @if (event.type) {
+              <div>{{ labels[event.type] }}</div>
+            }
+
+            @if (
+              event.to && (
+                event.type === 'transfer' ||
+                event.type === 'created' ||
+                event.type === 'bridgeIn'
+              )
+            ) {
+              <app-address [address]="event.to" />
+            } @else if (event.type === 'bridgeOut') {
+              <app-address [address]="event.from" />
+            }
+
+            @if (
+              event.value !== '0' &&
+              event.type !== 'transfer' &&
+              event.type !== 'created' &&
+              event.type !== 'bridgeIn' &&
+              event.type !== 'bridgeOut'
+            ) {
+              <span class="value">
+                Ξ{{ event.value | weiToEth }}<br />
+              </span>
+            }
+
+            <div class="date">
+              {{ event.blockTimestamp | timeago : true }}
+            </div>
+          </div>
+        </div>
+      </a> -->
+
+  </table>
+</section>

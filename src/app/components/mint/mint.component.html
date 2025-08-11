@@ -1,0 +1,115 @@
+<div class="collection-info-wrapper">
+  <img [src]="'/assets/collections/' + collection()?.slug + '/logo.png'" alt="">
+
+  <div class="x-link">
+    <a href="https://x.com/nomorelabs" target="_blank">
+      <svg width="1200" height="1227" viewBox="0 0 1200 1227" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M714.163 519.284L1160.89 0H1055.03L667.137 450.887L357.328 0H0L468.492 681.821L0 1226.37H105.866L515.491 750.218L842.672 1226.37H1200L714.137 519.284H714.163ZM569.165 687.828L521.697 619.934L144.011 79.6944H306.615L611.412 515.685L658.88 583.579L1055.08 1150.3H892.476L569.165 687.854V687.828Z" fill="currentColor"/></svg>
+
+      &#64;nomorelabs
+    </a>
+  </div>
+</div>
+
+<div class="actions-wrapper">
+
+  <div class="mint-info-wrapper">
+    <div>
+      <span class="minted">{{ state().mintProgress | number }}</span>/{{ collection()?.supply | number }} inscribed
+    </div>
+
+    <div>
+      <button
+        tippy
+        data-tippy-placement="top"
+        data-tippy-content="Inscriptions are available on a first come first serve basis. Each one is unique and cannot be duplicated based on <a href='https://docs.ethscriptions.com/overview/protocol-specification#creating-ethscriptions' target='_blank'>these protocol rules</a>.">
+
+        ?
+      </button>
+    </div>
+  </div>
+
+  <div class="actions-buttons-wrapper">
+
+    @if (!collection()?.mintEnabled) {
+      <div class="coming-soon">
+        <button>Coming Soon</button>
+      </div>
+    }
+
+    @if (state().penaltyTimeout) {
+      <div class="penalty-timeout">
+        <img src="/assets/idiot.gif" alt="you're an idiot" />
+        <p>You've been placed in a penalty timeout for clicking too hard. Try again in <span>{{ state().retryAfter }}</span> seconds.</p>
+      </div>
+    }
+
+    <button
+      (click)="getRandomMintItem()"
+      [class.disabled]="
+        !(connected$ | async) ||
+        state().inscribing ||
+        !collection()?.mintEnabled ||
+        state().penaltyTimeout
+      ">
+
+      @if (state().loadingMint) {
+        <ng-container *ngTemplateOutlet="loading" />
+      } @else {
+        Random
+      }
+    </button>
+
+    @if (connected$ | async) {
+      <button
+        (click)="inscribe()"
+        class="inscribe"
+        [class.inscribed]="state().activeMint?.exists"
+        [class.disabled]="
+          state().inscribing ||
+          !state().activeMint?.metadata?.image ||
+          state().activeMint?.exists ||
+          !collection()?.mintEnabled ||
+          state().penaltyTimeout ||
+          state().transaction
+        ">
+
+        @if (state().inscribing) {
+          <ng-container *ngTemplateOutlet="loading" />
+        } @else {
+          {{ state().activeMint?.exists ? 'Already inscribed' : 'Inscribe' }}
+        }
+      </button>
+    } @else {
+      <button
+        (click)="connect()"
+        class="connect"
+        [class.disabled]="!collection()?.mintEnabled">
+
+        Connect
+      </button>
+    }
+  </div>
+
+  <!-- @if (error()) {
+    <pre class="pink">{{ error() }}</pre>
+  } -->
+
+  <div class="legal" [class.disabled]="!collection()?.mintEnabled">
+    <p>By clicking the "inscribe" button, you agree to our <a href="https://bafybeie75bq3qinz2t2rqkoew5ypxu5zgoecqsnhfq45kwsubcrwpi7heu.ipfs.dweb.link/" target="_blank">terms</a>.</p>
+    <p>Network fees apply</p>
+  </div>
+</div>
+
+<ng-template #loading>
+  <img
+    src="/assets/loader-C3FF00.gif"
+    class="loader"
+    width="19"
+    height="19"
+    alt="loading"
+  />
+</ng-template>
+
+<ng-template #externalIcon>
+  <svg height="9" viewBox="0 0 9 9" width="9" xmlns="http://www.w3.org/2000/svg"><path d="m3 0v1.5h-1.5v6h6v-1.5h1.5v3h-9v-9zm1.5 4.5v1.5h-1.5v-1.5zm1.5 0h-1.5v-1.5h1.5v-1.5h-1.5v-1.5h4.5v4.5h-1.5v-1.5h-1.5z" fill="currentColor" fill-rule="evenodd" /></svg>
+</ng-template>

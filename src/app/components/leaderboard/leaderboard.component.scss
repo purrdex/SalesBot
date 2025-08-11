@@ -1,0 +1,145 @@
+@use 'abstracts/variables' as *;
+@use 'abstracts/mixins' as *;
+
+:host {
+  display: block;
+  font-family: var(--secondary-font-stack);
+  font-weight: normal;
+}
+
+.leaderboard-header {
+  display: flex;
+  height: 7rem;
+
+  padding: 0 0 1rem 0;
+
+  border-bottom: .3rem solid rgba(var(--white), .1);
+
+  h3 {
+    font-weight: normal;
+    padding: 0;
+    margin: 0;
+  }
+
+  p {
+    font-size: .9rem;
+    padding: 0;
+    margin: 0;
+    padding-top: .5rem;
+    line-height: 1.2rem;
+  }
+
+  .logo-wrapper {
+    background-color: rgba(var(--highlight), 1);
+    padding: 1rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+
+    svg {
+      width: 6rem;
+      height: 4rem;
+
+      path {
+        fill: rgba(var(--black), 1);
+      }
+    }
+  }
+
+  @media (max-width: $mobile) {
+    p {
+      font-size: .8rem;
+    }
+  }
+}
+
+.grid-header,
+.leaderboard-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 3rem auto 8rem 8rem;
+  padding: 1rem;
+  align-items: center;
+
+  font-size: 1.2rem;
+
+  a {
+    display: flex;
+    align-items: center;
+
+    color: rgba(var(--white), 1);
+    text-decoration: none;
+
+    max-width: 100%;
+    // overflow: hidden;
+    // text-overflow: ellipsis;
+    // white-space: nowrap;
+
+    app-address {
+      max-width: 18rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  .points {
+    // color: rgba(var(--black), 1);
+  }
+
+  .rank {
+    width: 2rem;
+    height: 2rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: rgba(var(--white), 1);
+    font-size: 1rem;
+    font-weight: normal;
+    text-align: center;
+
+    .icon {
+      padding-right: .5rem;
+      img {
+        width: 3.6rem;
+        height: 3.6rem;
+        object-fit: contain;
+        image-rendering: pixelated;
+      }
+    }
+
+    &.highlight {
+      border: .2rem solid rgba(var(--white), 1);
+      color: rgba(var(--white), 1);
+    }
+
+    &.top {
+      background-color: rgba(var(--pink), 1);
+      border: none;
+    }
+  }
+
+  &.i0 {
+    background-color: rgba(var(--highlight), 1);
+    color: rgba(var(--black), 1);
+    a {
+      color: rgba(var(--black), 1);
+    }
+  }
+
+  &.i1 {
+    background-color: rgba(var(--highlight), .5);
+  }
+
+  &.i2 {
+    background-color: rgba(var(--highlight), .25);
+  }
+}
+
+.grid-header {
+  font-size: 1rem;
+}

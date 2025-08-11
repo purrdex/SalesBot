@@ -1,0 +1,108 @@
+<section
+  class="events-wrapper">
+
+  <div class="events-header">
+    <div class="events-header-title">
+      <h2>Recent Activity</h2>
+      <!-- <button>[View All]</button> -->
+    </div>
+
+    <ng-select
+      [items]="txFilters"
+      [clearable]="false"
+      [searchable]="false"
+      bindValue="value"
+      bindLabel="label"
+      [(ngModel)]="_activeTxFilter"
+      (change)="setActiveTxFilter($event)">
+    </ng-select>
+  </div>
+
+  <div
+    #scroller
+    class="events-items">
+
+    @for (
+      event of events$ | async;
+      track (event.hashId + '-' + event.type + '-' + event.from + '-' + event.tokenId + '-' + idx);
+      let idx = $index
+    ) {
+      <a
+        [routerLink]="['/', 'details', event.hashId]"
+        class="event-item"
+        [class]="event.type | lowercase"
+        [class.background]="collection()?.hasBackgrounds">
+
+        <div class="image-wrapper">
+          <img
+            [lazyLoad]="dataSvc.staticUrl + '/static/images/' + event.sha"
+            [defaultImage]="'assets/loadingphunk.png'"
+            width="120"
+            height="120"
+          />
+        </div>
+
+        <div class="labels-wrapper">
+
+          <div class="token-id">
+            #{{ event.tokenId }}
+          </div>
+
+          <div class="label">
+            @if (event.type) {
+              <div [innerHTML]="labels[event.type]"></div>
+            }
+
+            @if (
+              event.to && (
+                event.type === 'transfer' ||
+                event.type === 'created' ||
+                event.type === 'bridgeIn'
+              )
+            ) {
+              <app-address [address]="event.to" />
+            } @else if (event.type === 'bridgeOut') {
+              <app-address [address]="event.from" />
+            }
+
+            @if (
+              event.value !== '0' &&
+              event.type !== 'transfer' &&
+              event.type !== 'created' &&
+              event.type !== 'bridgeIn' &&
+              event.type !== 'bridgeOut'
+            ) {
+              <span class="value">
+                Ξ{{ event.value | weiToEth }}<br />
+              </span>
+            }
+
+            <div class="date">
+              {{ event.blockTimestamp | timeago : true }}
+            </div>
+          </div>
+        </div>
+      </a>
+    } @empty {
+      @for (i of [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]; track idx; let idx = $index) {
+        <span class="event-item">
+          <div class="image-wrapper placeholder">
+            <img
+              [lazyLoad]="'assets/loadingphunk.png'"
+              [defaultImage]="'assets/loadingphunk.png'"
+              width="120"
+              height="120"
+            />
+          </div>
+        </span>
+      }
+    }
+
+    <button
+      class="event-item view-more"
+      (click)="paginateEvents()">
+
+      View<br />More
+    </button>
+  </div>
+</section>

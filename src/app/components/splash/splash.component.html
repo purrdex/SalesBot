@@ -1,0 +1,24 @@
+<div
+  #imagesWrapper
+  class="images-wrapper"
+  [class.mint-mode]="collection()?.isMinting"
+  [class.is-minting]="!!mintImage() && collection()?.isMinting">
+
+  @for (
+    image of ((images$ | async) || defaultImages);
+    track image.src + image.type + idx;
+    let idx = $index;
+  ) {
+    <div class="image-wrapper" [class]="image.type">
+      <img [src]="image.src" width="300" height="300" />
+    </div>
+  } @empty {
+    @for (image of defaultImages; track image.src + image.type + idx; let idx = $index) {
+      <div class="image-wrapper" [class]="image.type">
+        <img [src]="image.src" width="300" height="300" />
+      </div>
+    }
+  }
+</div>
+
+<!-- <app-stats [collection]="collection()" /> -->

@@ -1,0 +1,183 @@
+<section #menuMain class="main" [style]="{ 'opacity': '0' }">
+
+  @if (address$ | async; as address) {
+    <div class="user-actions">
+      <button
+        (click)="withdraw()"
+        [class.disabled]="(hasWithdrawal$ | async) === 0">
+        <!-- {{ hasWithdrawal$ | async }} -->
+        <span>Withdraw Funds</span>
+        <span>({{ (hasWithdrawal$ | async) }} ETH)</span>
+      </button>
+      <button (click)="disconnect()">Disconnect</button>
+    </div>
+  }
+
+  <div class="menu-items">
+    @if (leaderboard$ | async; as leaderboard) {
+      @if (leaderboard.length) {
+        <div
+          (click)="navigateMenu('leaderboard')"
+          class="leaderboard-button">
+
+          <div class="logo-wrapper">
+            <ng-template [ngTemplateOutlet]="pointsIcon"></ng-template>
+          </div>
+
+          <div class="button-content">
+            <h4>Points Leaderboard</h4>
+            <span class="top-points">
+              <div class="value">{{ leaderboard[0]?.points | formatCash }}</div>
+              <div class="label">Points</div>
+            </span>
+            <div class="top-holder">
+              <app-address [address]="leaderboard[0]?.address" />
+              <div class="label">#1 Points holder</div>
+            </div>
+          </div>
+
+          <div class="arrow">
+            <ng-template [ngTemplateOutlet]="arrowIcon" />
+          </div>
+        </div>
+      }
+    }
+
+    @if (!isStandaloneMarket) {
+      <div
+        class="curated-button"
+        (click)="navigateMenu('curated')">
+
+        <span>Curated Collections</span>
+
+        <div class="arrow">
+          <ng-template [ngTemplateOutlet]="arrowIcon" />
+        </div>
+      </div>
+    }
+  </div>
+
+  @if (address$ | async; as address) {
+    @if (activeCollection$ | async; as activeCollection) {
+      <div class="stats-wrapper" waIntersectionObserver waIntersectionThreshold="0.5">
+        <!-- @if ((userOpenBids$ | async); as bids) {
+          @if (bids.length) {
+            <a
+              class="stat-item bids"
+              [routerLink]="['/', 'curated', activeCollection.slug, 'market', 'bids']"
+              [queryParams]="{ address }">
+
+              <app-phunk-grid
+                [phunkData]="bids || []"
+                [viewType]="'compact'"
+                [showLabels]="false"
+                [limit]="5"
+                [marketType]="'bids'"
+              />
+              <div class="stat">
+                <div class="label"><span>Open</span><span>Bids</span></div>
+                <div class="value">{{ stats.bids | number }}</div>
+              </div>
+              <div class="arrow">
+                <ng-template [ngTemplateOutlet]="arrowIcon" />
+              </div>
+            </a>
+          }
+        } -->
+
+        <!-- <div class="stat">
+          <span class="label">Owned</span>
+          <span class="value">{{ stats.owned }}</span>
+        </div>
+
+        <div class="stat">
+          <span class="label">Escrowed</span>
+          <span class="value">{{ stats.escrowed }}</span>
+        </div> -->
+
+        @if ((listedPhunks$ | async); as listed) {
+          @if (listed.length) {
+            <a
+              class="stat-item listings"
+              [routerLink]="['/', 'curated', activeCollection.slug, 'market', 'owned']"
+              [queryParams]="{ address }">
+
+              <app-phunk-grid
+                [phunkData]="listed || []"
+                [viewType]="'compact'"
+                [showLabels]="false"
+                [limit]="5"
+                [marketType]="'listings'"
+              />
+
+              <div class="stat">
+                <div class="label"><span>Active</span><span>Listings</span></div>
+                <div class="value">{{ stats.listed | number }}</div>
+              </div>
+
+              <div class="arrow">
+                <ng-template [ngTemplateOutlet]="arrowIcon" />
+              </div>
+            </a>
+          }
+        }
+      </div>
+    }
+
+    @if ((notifications$ | async); as notifs) {
+      @if (menuSeen()) {
+        <div class="notifications-wrapper">
+          <h3>Your Activity</h3>
+          <div class="notifications" [class.scrollbar]="notifs.length > 4">
+            @if (notifs.length) {
+              @for (txn of notifs; track txn.id) {
+                <!-- {{ txn.id }} -->
+                <app-notification [txn]="txn" [dismissible]="false" [isMenu]="true" />
+              }
+            } @else {
+              <p class="no-activity">No recent activity.</p>
+            }
+          </div>
+        </div>
+      }
+    }
+  }
+</section>
+
+<section #menuLeaderboard class="leaderboard" [style]="{ 'opacity': '0' }">
+  <ng-template [ngTemplateOutlet]="sectionHeader" />
+  <app-leaderboard />
+</section>
+
+<section
+  #menuCurated
+  class="curated"
+  [style]="{ 'opacity': '0' }"
+  waIntersectionObserver waIntersectionThreshold="0.5">
+
+  <!-- {{ activeCollection$ | async | json }} -->
+
+  <ng-template [ngTemplateOutlet]="sectionHeader" />
+  <app-collections />
+</section>
+
+<ng-template #sectionHeader>
+  <div class="section-header">
+    <button (click)="navigateMenu('main')">
+      <ng-template [ngTemplateOutlet]="backIcon"></ng-template>
+      Back
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #backIcon>
+  <svg height="15" viewBox="0 0 9 15" width="9" xmlns="http://www.w3.org/2000/svg"><path d="m6 6h3v3h-3zm-3-3h3v3h-3zm0 6h3v3h-3zm-3-9h3v3h-3zm0 12h3v3h-3z" fill-rule="evenodd"/></svg>
+</ng-template>
+
+<ng-template #pointsIcon>
+  <svg height="119" viewBox="0 0 119 119" width="119" xmlns="http://www.w3.org/2000/svg"><path d="m17 17v17h-17v-17zm17-17v17h-17v-17zm0 17v-17h34v17zm-34 17h17v34h-17zm68 17v-17h34v34h-17v-17zm51-17h-17v17h17zm-85 17v-17h34v17zm0 17h-17v17h17zm0 17v-17h34v17zm34-68v-17h34v34h-17v-17zm0 68v-17h34v17zm17 0h17v34h-17z"/></svg>
+</ng-template>
+
+<ng-template #arrowIcon>
+  <svg height="25" viewBox="0 0 15 25" width="15" xmlns="http://www.w3.org/2000/svg"><path d="m10 10h5v5h-5zm-5-5h5v5h-5zm0 10h5v5h-5zm-5-15h5v5h-5zm0 20h5v5h-5z" fill-rule="evenodd"/></svg>
+</ng-template>

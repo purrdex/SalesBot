@@ -1,0 +1,75 @@
+@if (txn(); as txn) {
+  @if ((collections$ | async); as collections) {
+    <div
+      class="txn-item {{ txn.type }} {{ txn | notifText : collections : 'class' }}"
+      [class.is-menu]="isMenu()">
+
+      @if (dismissible()) {
+        <button class="dismiss" (click)="dismiss(txn)">x</button>
+      }
+
+      @if (txn.isBatch && txn.hashIds) {
+        <div class="batch-image">
+          @for (hashId of txn.hashIds; track hashId) {
+            <app-notification-image [hashId]="hashId" />
+          }
+        </div>
+      } @else if (txn.hashId) {
+        <a class="single-image" [routerLink]="['/', 'details', txn.hashId]">
+          <app-notification-image [hashId]="txn.hashId" />
+        </a>
+      } @else if (txn.type === 'chat') {
+        <div class="single-image">
+          <img src="/assets/chat-image.png" alt="">
+        </div>
+      } @else if (txn.function === 'tic' || txn.function === 'ticDelete') {
+        <div class="single-image">
+          <img src="/assets/tic-image.png" alt="">
+        </div>
+      } @else {
+        <div class="single-image">
+          <img src="/assets/loadingphunk.png" alt="">
+        </div>
+      }
+
+      <div class="txn-info">
+        <h4 [innerHTML]="txn | notifText : collections : 'title'"></h4>
+
+        @if (txn.type === 'chat' && txn.chatAddress) {
+          <p>
+            from <app-address [address]="txn.chatAddress" />
+          </p>
+        } @else {
+          <p [innerHTML]="txn | notifText : collections : 'body'"></p>
+        }
+
+        <div class="footer">
+          @if (txn.type === 'chat' && txn.chatAddress) {
+            <button (click)="setChat(txn.chatAddress)">View message</button>
+          }
+
+          @if (txn.hash) {
+            <a class="hash" [href]="env.explorerUrl + '/tx/' + txn.hash" target="_blank">
+              <app-address [address]="txn.hash"></app-address>
+              <ng-template [ngTemplateOutlet]="externalIcon"></ng-template>
+            </a>
+          }
+
+          @if (txn.type === 'error') {
+            <span class="error">
+              {{ txn.detail.details || txn.detail.metaMessages?.["0"] || txn.detail.shortMessage || txn.detail.message || txn.detail }}
+            </span>
+          }
+
+          @if (txn.type === 'chat') {
+            <div class="timestamp">{{ txn.timestamp | timeago : true }}</div>
+          }
+        </div>
+      </div>
+    </div>
+  }
+}
+
+<ng-template #externalIcon>
+  <svg height="9" viewBox="0 0 9 9" width="9" xmlns="http://www.w3.org/2000/svg"><path d="m3 0v1.5h-1.5v6h6v-1.5h1.5v3h-9v-9zm1.5 4.5v1.5h-1.5v-1.5zm1.5 0h-1.5v-1.5h1.5v-1.5h-1.5v-1.5h4.5v4.5h-1.5v-1.5h-1.5z" fill="#ff03b4" fill-rule="evenodd" /></svg>
+</ng-template>

@@ -1,0 +1,89 @@
+@if ((tokenSales$ | async); as tokenSales) {
+  <div class="transaction-history">
+
+    <h2 i18n>Transaction History</h2>
+
+    <div class="transaction-wrapper">
+      <table [cellPadding]="0" [cellSpacing]="0">
+        <thead>
+          <tr>
+            <th i18n>Type</th>
+            <th i18n>From</th>
+            <th i18n>To</th>
+            <th i18n>Amount</th>
+            <th i18n>Txn</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (event of tokenSales; track event.txHash + '-' + event.type) {
+            <tr [class]="(event.type | lowercase) || 'transfer'">
+
+              <td>
+                <div class="cell-inner type-label">
+                  @if (event.type) {
+                    {{ eventLabels[event.type] }}
+                  }
+                </div>
+              </td>
+
+              <td>
+                <div class="cell-inner">
+                  @if (event.from !== ZERO_ADDRESS) {
+                    <a [routerLink]="['/', 'curated', event.slug, 'market', 'owned']" [queryParams]="{ address: event.from }">
+                      <app-address [address]="event.from" />
+                    </a>
+                  } @else {
+                    <ng-template [ngTemplateOutlet]="placeholderCell" />
+                  }
+                </div>
+              </td>
+
+              <td>
+                <div class="cell-inner">
+                  @if (event.to !== ZERO_ADDRESS) {
+                    <a [routerLink]="['/', 'curated', event.slug, 'market', 'owned']" [queryParams]="{ address: event.to }">
+                      <app-address [address]="event.to" />
+                    </a>
+                  } @else {
+                    <ng-template [ngTemplateOutlet]="placeholderCell" />
+                  }
+                </div>
+              </td>
+
+              <td>
+                <div class="cell-inner value">
+                  @if (event.value; as value) {
+                    @if ((value | weiToEth); as price) {
+                      {{ price | number : '1.0-5' }}Ξ
+                    } @else {
+                      <ng-template [ngTemplateOutlet]="placeholderCell" />
+                    }
+                  } @else {
+                    <ng-template [ngTemplateOutlet]="placeholderCell" />
+                  }
+                </div>
+              </td>
+
+              <td>
+                <div class="cell-inner">
+                  <a
+                    [href]="explorerUrl + '/tx/' + (event.txHash)"
+                    target="_blank"
+                    class="tx-link"
+                    [title]="event.blockTimestamp | date">
+
+                    {{ event.blockTimestamp | timeago }}
+                  </a>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+}
+
+<ng-template #placeholderCell>
+  <div class="placeholder">---</div>
+</ng-template>

@@ -1,0 +1,68 @@
+<div class="breadcrumb">
+  <div class="inner">
+    @if (phunk(); as phunk) {
+
+      @if (phunk.tokenId > -1) {
+        <div class="crumbs-wrapper">
+          <div class="crumbs">
+            <button [routerLink]="['/', 'curated', phunk.slug]">
+              {{ phunk.collection?.name }}
+            </button>
+            <span class="divider">/</span>
+            <span class="number">{{ phunk.tokenId }}</span>
+          </div>
+
+          <div class="save-pfp">
+            <button
+              (click)="togglePfpOptions()"
+              [class.active]="pfpOptionsActive()"
+              [class.disabled]="!downloadEnabled()">
+
+              {{ pfpOptionsActive() ? 'Cancel' : 'Download PFP' }}
+            </button>
+          </div>
+        </div>
+
+        @if (pfpOptionsActive()) {
+          <div class="pfp-options-wrapper">
+
+            <div class="pfp-options">
+              <div
+                class="shape-select"
+                [class.disabled]="!customizeEnabled()">
+
+                <input
+                  type="checkbox"
+                  id="transparent"
+                  name="transparent"
+                  value="transparent"
+                  [formControl]="transparentCheck"
+                />
+                <label i18n for="transparent">Transparent</label>
+              </div>
+            </div>
+
+            <div class="actions-wrapper">
+              <button (click)="downloadCanvas()">Save</button>
+            </div>
+          </div>
+        }
+      }
+
+    } @else {
+      <div class="crumbs-wrapper">
+        <div class="crumbs">
+          <button>Loading...</button>
+          <span class="divider">&nbsp;</span>
+          <span class="number">&nbsp;</span>
+        </div>
+
+        <div class="save-pfp">
+          <button class="disabled">Download PFP</button>
+        </div>
+      </div>
+    }
+  </div>
+</div>
+
+<canvas #pfp id="pfp" width="480" height="480" style="display: none;"></canvas>

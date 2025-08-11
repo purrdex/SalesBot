@@ -1,0 +1,56 @@
+<div class="chat-wrapper">
+  @if ((this.toUser$ | async); as toUser) {
+    <div
+      class="chat-header">
+
+      <button class="back" (click)="goBack()">
+        <ng-template [ngTemplateOutlet]="backIcon" />
+      </button>
+
+      <div class="with">
+        Chatting with <app-address [address]="toUser" />
+      </div>
+    </div>
+
+    <div #messages class="messages-wrapper">
+      @for (message of (messages$ | async); track message.id) {
+        <div
+          class="chat-message"
+          [class.self]="message.self">
+
+          <div class="message-inner">
+            <div
+              class="timestamp"
+              [title]="message.timestamp | date : 'medium'">
+
+              {{ message.timestamp | timeago : true }}
+            </div>
+            <div class="content">{{ message.content }}</div>
+          </div>
+        </div>
+      } @empty {
+        <div class="loader">
+          loading conversation
+          <div class="spinner">
+            <img src="/assets/loader-dark.gif" width="15" height="15" alt="" />
+          </div>
+        </div>
+      }
+
+      @if (this.error) {
+        <div class="error">
+          <p [innerHTML]="this.error"></p>
+        </div>
+      }
+    </div>
+
+    <form (submit)="sendMessage($event, toUser)">
+      <input type="text" [formControl]="messageInput" [placeholder]="'Your Message'" />
+      <button type="submit">Send</button>
+    </form>
+  }
+</div>
+
+<ng-template #backIcon>
+  <svg height="15" viewBox="0 0 9 15" width="9" xmlns="http://www.w3.org/2000/svg"><path d="m6 6h3v3h-3zm-3-3h3v3h-3zm0 6h3v3h-3zm-3-9h3v3h-3zm0 12h3v3h-3z" fill-rule="evenodd"/></svg>
+</ng-template>

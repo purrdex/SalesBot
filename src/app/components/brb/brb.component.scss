@@ -1,0 +1,23 @@
+@use 'abstracts/variables' as *;
+@use 'abstracts/mixins' as *;
+
+:host {
+  position: fixed;
+  top: var(--header-height);
+  left: 0;
+
+  z-index: 1;
+
+  width: 100%;
+  height: calc(var(--billboard-height) - var(--header-height));
+
+  background-color: rgba(var(--base-color), 1);
+
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+svg {
+  display: block;
+}

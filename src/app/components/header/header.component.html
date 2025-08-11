@@ -1,0 +1,105 @@
+<div class="inner" [class.menu-active]="menuActive$ | async">
+
+  @if (isStandaloneMarket) {
+    <a [routerLink]="['/']" class="logo standalone">
+      <img
+        [lazyLoad]="(activeCollection$ | async)?.image || 'assets/loadingphunk.png'"
+        [defaultImage]="'assets/loadingphunk.png'"
+        alt="logo" />
+    </a>
+  } @else {
+    <a [routerLink]="['/']" class="logo">
+      <ng-template [ngTemplateOutlet]="logo" />
+    </a>
+  }
+
+  <div class="search-wrapper">
+    <app-search />
+    @if (!isStandaloneMarket) {
+      <app-collections-dropdown />
+    }
+  </div>
+
+  <div class="user-tools">
+
+    <div class="theme-switcher">
+      <button [class]="theme$ | async" (click)="toggleTheme$.next()">
+        <ng-template [ngTemplateOutlet]="themSwitcher" />
+      </button>
+    </div>
+
+    <div class="connect-menu">
+      <!-- {{ connected$ | async | json }} -->
+      @if ((connected$ | async)) {
+        @if ((walletAddress$ | async); as address) {
+          <a
+            [routerLink]="['/', 'curated', (activeCollection$ | async)?.slug, 'market', 'owned']"
+            [queryParams]="{ address }">
+
+            <app-address [address]="address" />
+          </a>
+
+          <button class="points" (click)="toggleMenu$.next()">
+            <ng-template [ngTemplateOutlet]="pointsIcon" />
+            {{ (userPoints$ | async) | number }}
+          </button>
+        }
+      } @else {
+        <button
+          class="connect"
+          (click)="web3Svc.connect()">
+
+          Connect
+        </button>
+      }
+
+      <div class="toggle-wrapper" (click)="toggleMenu$.next()">
+        <button
+          class="menu"
+          [class.active]="menuActive$ | async">
+
+          @if ((notifications$ | async); as notifs) {
+            <div class="notif">{{ notifs | number }}</div>
+          }
+
+          <div class="arrow">
+            <ng-template [ngTemplateOutlet]="menuIcon" />
+          </div>
+        </button>
+
+        @if (activeMultiplier$ | async; as multiplier) {
+          @if (multiplier > 1) {
+            <button class="multiplier">
+              <span class="value">{{ multiplier }}x</span>
+              <span class="label">points<br />multiplier</span>
+            </button>
+          }
+        }
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <ng-template #logo>
+     <img src="assets/banner.svg" alt="Logo" class="logo" />
+  </ng-template>
+  
+
+
+
+<ng-template #themSwitcher>
+  <svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><g fill="rgba(var(--header-text), 1)" fill-rule="evenodd"><path d="m3 3h9v18h-9z"/><path d="m18 21v3h-12v-3zm-12-3v3h-3v-3zm15 0v3h-3v-3zm-18-12v12h-3v-12zm21 0v12h-3v-12zm-3-3v3h-3v-3zm-15 0v3h-3v-3zm0 0v-3h12v3z"/></g></svg>
+</ng-template>
+
+<ng-template #withdrawIcon>
+  <svg height="6" viewBox="0 0 5 6" width="5" xmlns="http://www.w3.org/2000/svg"><g><path d="m0 0h1v1h-1z" opacity=".6"/><path d="m1 0h1v1h-1z" opacity=".7"/><path d="m2 0h1v1h-1z" opacity=".8"/><path d="m3 0h1v1h-1z" opacity=".7"/><path d="m4 0h1v1h-1z" opacity=".6"/><path d="m2 2h1v1h-1z"/><path d="m2 1h1v1h-1z"/><path d="m2 3h1v1h-1z"/><path d="m2 4h1v1h-1z"/><path d="m3 4h1v1h-1z"/><path d="m2 5h1v1h-1z"/><path d="m4 3h1v1h-1z"/><path d="m1 4h1v1h-1z"/><path d="m0 3h1v1h-1z"/></g></svg>
+</ng-template>
+
+<ng-template #menuIcon>
+  <svg height="15" viewBox="0 0 9 15" width="9" xmlns="http://www.w3.org/2000/svg"><path d="m6 6h3v3h-3zm-3-3h3v3h-3zm0 6h3v3h-3zm-3-9h3v3h-3zm0 12h3v3h-3z" fill-rule="evenodd"/></svg>
+</ng-template>
+
+<ng-template #pointsIcon>
+  <svg height="119" viewBox="0 0 119 119" width="119" xmlns="http://www.w3.org/2000/svg"><path d="m17 17v17h-17v-17zm17-17v17h-17v-17zm0 17v-17h34v17zm-34 17h17v34h-17zm68 17v-17h34v34h-17v-17zm51-17h-17v17h17zm-85 17v-17h34v17zm0 17h-17v17h17zm0 17v-17h34v17zm34-68v-17h34v34h-17v-17zm0 68v-17h34v17zm17 0h17v34h-17z"/></svg>
+</ng-template>
